@@ -36,7 +36,7 @@ jobs:
       - name: Create repository
         if: steps.check-repo.outputs.repo_exists == 'false'
         run: |
-          echo "creating a repository
+          echo "creating a repository"
           repo_details=${{ steps.read-repo-details.outputs.repo_details }}
           curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                -d '{"name":"${{ steps.read-json.outputs.repo_name }}"}' \
