@@ -29,16 +29,13 @@ jobs:
           echo "::set-output name=repo_name::$(jq -r '.repo_name' repo-details.json)"
           echo "::set-output name=source_repo::$(jq -r '.source_repo' repo-details.json)"
           echo "::set-output name=destination_repo::$(jq -r '.destination_repo' repo-details.json)"
-          echo "app repo name: "$repo_name
-          echo "source repo name: "$source_repo
-          echo "destination repo name: "$destination_repo
+          echo "app repo name is ${{ steps.read-json.outputs.repo_name }}"
+          echo "source repo name is ${{ steps.read-json.outputs.source_repo }}"
+          echo "destination repo name is ${{ steps.read-json.outputs.destination_repo }}"
 
       - name: Check if repository exists
         id: check-repo
         run: |
-          echo "app repo name : " ${{ steps.read-json.outputs.repo_name }}
-          echo "source repo name: " ${{ steps.read-json.outputs.source_repo }}
-          echo "destination repo name: " ${{ steps.read-json.outputs.destination_repo }}
           response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository_owner }}/${{ steps.read-json.outputs.repo_name }})
           echo "response is"$response
           echo "::set-output name=repo_exists::$( [ $response -eq 200 ] && echo true || echo false )"
