@@ -38,6 +38,6 @@ jobs:
         run: |
           echo "creating a repository"
           repo_details=${{ steps.read-repo-details.outputs.repo_details }}
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
                -d '{"name":"${{ steps.read-json.outputs.repo_name }}"}' \
                https://api.github.com/user/repos
