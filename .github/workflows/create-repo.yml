@@ -1,0 +1,41 @@
+name: Create Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Read JSON file
+        id: read-json
+        run: |
+          echo "::set-output name=repo_name::$(jq -r '.repo_name' repo-details.json)"
+              
+      - name: Check if repository exists
+        id: check-repo
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository_owner }}/${{ steps.read-json.outputs.repo_name }})
+          echo "::set-output name=repo_exists::$( [ $response -eq 200 ] && echo true || echo false )"
+
+      - name: Create repository
+        if: steps.check-repo.outputs.repo_exists == 'false'
+        run: |
+          repo_details=${{ steps.read-repo-details.outputs.repo_details }}
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -d "$repo_details" \
+               https://api.github.com/user/repos
