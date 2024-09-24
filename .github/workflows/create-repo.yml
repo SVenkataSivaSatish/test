@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - main
-
+    paths-ignore:
+      - '.github/workflows'
+  workflow_dispatch:
 jobs:
   create-repo:
     runs-on: ubuntu-latest
@@ -25,19 +27,37 @@ jobs:
         id: read-json
         run: |
           echo "::set-output name=repo_name::$(jq -r '.repo_name' repo-details.json)"
-              
+          echo "::set-output name=source_repo::$(jq -r '.source_repo' repo-details.json)"
+          echo "::set-output name=destination_repo::$(jq -r '.destination_repo' repo-details.json)"
+
       - name: Check if repository exists
         id: check-repo
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository_owner }}/${{ steps.read-json.outputs.repo_name }})
-          echo "response is : "$response
+          echo "response is"$response
           echo "::set-output name=repo_exists::$( [ $response -eq 200 ] && echo true || echo false )"
 
       - name: Create repository
         if: steps.check-repo.outputs.repo_exists == 'false'
         run: |
-          echo "creating a repository"
           repo_details=${{ steps.read-repo-details.outputs.repo_details }}
-          curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                -d '{"name":"${{ steps.read-json.outputs.repo_name }}"}' \
                https://api.github.com/user/repos
+      
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.read-json.outputs.source_repo }}
+          token: ${{ secrets.GH_TOKEN }}
+      
+      - name: Copy contents to destination repository
+        run: |
+          git clone https://github.com/${{ steps.read-json.outputs.destination_repo }} destination-repo
+          rsync -av --progress . destination-repo --exclude .git --exclude repo-config.json
+          cd destination-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Copy contents from source repository"
+          git push
