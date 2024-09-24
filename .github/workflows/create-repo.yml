@@ -30,13 +30,14 @@ jobs:
         id: check-repo
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository_owner }}/${{ steps.read-json.outputs.repo_name }})
-          echo "response is"$response
+          echo "response is : "$response
           echo "::set-output name=repo_exists::$( [ $response -eq 200 ] && echo true || echo false )"
 
       - name: Create repository
         if: steps.check-repo.outputs.repo_exists == 'false'
         run: |
+          echo "creating a repository
           repo_details=${{ steps.read-repo-details.outputs.repo_details }}
           curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -d "$repo_details" \
+               -d '{"name":"${{ steps.read-json.outputs.repo_name }}"}' \
                https://api.github.com/user/repos
