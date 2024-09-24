@@ -29,7 +29,10 @@ jobs:
           echo "::set-output name=repo_name::$(jq -r '.repo_name' repo-details.json)"
           echo "::set-output name=source_repo::$(jq -r '.source_repo' repo-details.json)"
           echo "::set-output name=destination_repo::$(jq -r '.destination_repo' repo-details.json)"
-              
+          echo "app repo name: "$repo_name
+          echo "source repo name: "$source_repo
+          echo "destination repo name: "$destination_repo
+
       - name: Check if repository exists
         id: check-repo
         run: |
