@@ -58,7 +58,8 @@ jobs:
           cd destination-repo
           git add .
           git commit -m "Copy contents from source repository"
-          git push
+          git remote set-url origin https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/${{ steps.read-json.outputs.destination_repo }}.git
+          git push -u origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
