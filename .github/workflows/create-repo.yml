@@ -89,6 +89,7 @@ jobs:
         # folder=$(jq -r '.folder' ec2-config.json)
         variables=$(jq -r '.variables | to_entries | map("\(.key) = \"\(.value)\"") | .[]' ec2-config.json)
         # echo "folder=$folder" >> $GITHUB_OUTPUT
+        echo "$variables"
         echo "variables=$variables" >> $GITHUB_OUTPUT
     
     - name: Checkout source repository
@@ -101,6 +102,7 @@ jobs:
       run: |
         cd ec2
         echo "${{ steps.read-json.outputs.variables }}" > terraform.tfvars
+        ls
 
     - name: Commit and push changes
       run: |
