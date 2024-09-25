@@ -35,8 +35,8 @@ jobs:
           echo "source remo name: $source_repo"
           echo "destination remo name: $destination_repo"
           echo "repo_name=$repo_name" >> $GITHUB_OUTPUT
-          echo "source_repo=$repo_name" >> $GITHUB_OUTPUT
-          echo "destination_repo=$repo_name" >> $GITHUB_OUTPUT
+          echo "source_repo=$source_repo" >> $GITHUB_OUTPUT
+          echo "destination_repo=$destination_repo" >> $GITHUB_OUTPUT
       
       - name: Check if repository exists
         id: check-repo
