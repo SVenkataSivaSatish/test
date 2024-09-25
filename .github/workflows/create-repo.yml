@@ -62,7 +62,7 @@ jobs:
           git commit -m "Copy contents from source repository"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       
 
