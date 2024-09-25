@@ -12,7 +12,7 @@ jobs:
   create-repo:
     runs-on: ubuntu-latest
     outputs:
-      source_repo: ${{ steps.read-json.outputs.source_repo }}
+      repo_name: ${{ steps.read-json.outputs.repo_name }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
