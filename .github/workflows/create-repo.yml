@@ -5,8 +5,9 @@ on:
     branches:
       - main
     paths-ignore:
-      - '.github/workflows'
+      - '.github/workflows/**'
   workflow_dispatch:
+  
 jobs:
   create-repo:
     runs-on: ubuntu-latest
