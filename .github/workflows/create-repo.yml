@@ -50,6 +50,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/${{ steps.read-json.outputs.source_repo }}
           token: ${{ secrets.GH_TOKEN }}
+
       
       - name: Copy contents to destination repository
         run: |
