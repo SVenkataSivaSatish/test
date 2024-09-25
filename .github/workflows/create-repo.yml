@@ -90,7 +90,7 @@ jobs:
       id: read-json
       run: |
         # folder=$(jq -r '.folder' ec2-config.json)
-        variables=$(jq -r '.variables | to_entries | map("\(.key) = \"\(.value)\"") | .[]' config.json)
+        variables=$(jq -r '.variables | to_entries | map("\(.key) = \"\(.value)\"") | .[]' ec2-config.json)
         # echo "folder=$folder" >> $GITHUB_OUTPUT
         echo "variables=$variables" >> $GITHUB_OUTPUT
 
