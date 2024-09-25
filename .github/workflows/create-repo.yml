@@ -83,7 +83,7 @@ jobs:
     - name: Checkout source repository
       uses: actions/checkout@v4
       with:
-          repository: ${{ github.repository_owner }}/${{ needs.create-repo.outputs.source_repo }}
+          repository: ${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}
           token: ${{ secrets.GH_TOKEN }}
 
     - name: Read configuration from JSON
