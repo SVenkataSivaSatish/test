@@ -11,7 +11,6 @@ on:
 jobs:
   create-repo:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,16 +26,26 @@ jobs:
       - name: Read JSON file
         id: read-json
         run: |
-          echo "::set-output name=repo_name::$(jq -r '.repo_name' repo-details.json)"
-          echo "::set-output name=source_repo::$(jq -r '.source_repo' repo-details.json)"
-          echo "::set-output name=destination_repo::$(jq -r '.destination_repo' repo-details.json)"
-
+          repo_name=$(jq -r '.repo_name' repo-details.json)
+          source_repo=$(jq -r '.source_repo' repo-details.json)
+          destination_repo=$(jq -r '.destination_repo' repo-details.json)
+          echo "app remo name: $repo_name"
+          echo "source remo name: $source_repo"
+          echo "destination remo name: $destination_repo"
+          echo "repo_name=$repo_name" >> $GITHUB_OUTPUT
+          echo "source_repo=$repo_name" >> $GITHUB_OUTPUT
+          echo "destination_repo=$repo_name" >> $GITHUB_OUTPUT
+      
       - name: Check if repository exists
         id: check-repo
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository_owner }}/${{ steps.read-json.outputs.repo_name }})
-          echo "response is"$response
-          echo "::set-output name=repo_exists::$( [ $response -eq 200 ] && echo true || echo false )"
+          echo "response is : "$response
+          if [ $response -eq 200 ] then;
+            echo "repo_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "repo_exists=false" >>$GITHUB_OUTPUT
+          fi
 
       - name: Create repository
         if: steps.check-repo.outputs.repo_exists == 'false'
@@ -65,5 +74,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      
-
+  
