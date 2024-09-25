@@ -100,7 +100,7 @@ jobs:
     - name: Create terraform.tfvars file
       run: |
         cd ec2
-        echo "${{ steps.read-json.outputs.variables }}" > ${{ steps.read-json.outputs.folder }}/terraform.tfvars
+        echo "${{ steps.read-json.outputs.variables }}" > terraform.tfvars
 
     - name: Commit and push changes
       run: |
