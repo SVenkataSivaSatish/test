@@ -54,7 +54,7 @@ jobs:
       
       - name: Copy contents to destination repository
         run: |
-          git clone git@github.com:${{ github.repository_owner }}/${{ steps.read-json.outputs.destination_repo }}.git destination-repo
+          git clone https://${{ secrets.GH_TOKEN }}@github.com:${{ github.repository_owner }}/${{ steps.read-json.outputs.destination_repo }}.git destination-repo
           rsync -av --progress . destination-repo --exclude .git --exclude repo-config.json
           cd destination-repo
           git config user.name "github-actions[bot]"
