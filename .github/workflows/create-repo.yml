@@ -82,10 +82,7 @@ jobs:
     steps:
     - name: Checkout source repository
       uses: actions/checkout@v4
-      with:
-          repository: ${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}
-          token: ${{ secrets.GH_TOKEN }}
-
+      
     - name: Read configuration from JSON
       id: read-json
       run: |
@@ -93,6 +90,12 @@ jobs:
         variables=$(jq -r '.variables | to_entries | map("\(.key) = \"\(.value)\"") | .[]' ec2-config.json)
         # echo "folder=$folder" >> $GITHUB_OUTPUT
         echo "variables=$variables" >> $GITHUB_OUTPUT
+    
+    - name: Checkout source repository
+      uses: actions/checkout@v4
+      with:
+          repository: ${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}
+          token: ${{ secrets.GH_TOKEN }}
 
     - name: Create terraform.tfvars file
       run: |
