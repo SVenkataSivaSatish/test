@@ -92,12 +92,6 @@ jobs:
         echo "variables<<EOF" >> $GITHUB_ENV
         cat variables.txt >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
-        # # echo "folder=$folder" >> $GITHUB_OUTPUT
-        # echo "$variables" > variables.txt
-        # cat variables.txt
-        # echo "variables=$(cat variables.txt)" >> $GITHUB_ENV
-        # # echo "$variables"
-        # # echo "variables=$variables" >> $GITHUB_OUTPUT
     
     - name: Checkout source repository
       uses: actions/checkout@v4
