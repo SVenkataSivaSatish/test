@@ -106,7 +106,7 @@ jobs:
         cd ec2
         while IFS= read -r line; do
           echo "$line" >> terraform.tfvars
-        done < <(echo "${{ env.variables }}")
+        done <<(echo "${{ env.variables }}")
         # echo "${{ env.variables }}" > terraform.tfvars
         ls
 
