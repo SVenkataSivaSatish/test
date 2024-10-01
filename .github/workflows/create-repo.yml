@@ -89,8 +89,10 @@ jobs:
         # folder=$(jq -r '.folder' ec2-config.json)
         variables=$(jq -r '.variables | to_entries | map("\(.key) = \"\(.value)\"") | .[]' ec2-config.json)
         # echo "folder=$folder" >> $GITHUB_OUTPUT
-        echo "$variables"
-        echo "variables=$variables" >> $GITHUB_OUTPUT
+        echo "$variables" > variables.txt
+        echo "variables=$(cat variables.txt)" >> $GITHUB_ENV
+        # echo "$variables"
+        # echo "variables=$variables" >> $GITHUB_OUTPUT
     
     - name: Checkout source repository
       uses: actions/checkout@v4
@@ -101,7 +103,7 @@ jobs:
     - name: Create terraform.tfvars file
       run: |
         cd ec2
-        echo "${{ steps.read-json.outputs.variables }}" > terraform.tfvars
+        echo "${{ env.variables }}" > terraform.tfvars
         ls
 
     - name: Commit and push changes
