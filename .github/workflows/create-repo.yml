@@ -104,8 +104,10 @@ jobs:
     - name: Create terraform.tfvars file
       run: |
         cd ec2
-        echo "${{env.variables}}"
-        echo "${{ env.variables }}" > terraform.tfvars
+        while IFS= read -r line; do
+          echo "$line" >> terraform.tfvars
+        done < <(echo "${{ env.variables }}")
+        # echo "${{ env.variables }}" > terraform.tfvars
         ls
 
     - name: Commit and push changes
