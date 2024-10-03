@@ -126,7 +126,7 @@ jobs:
   
   create-workflow:
     runs-on: ubuntu-latest
-
+    needs: create-tfvars
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -134,7 +134,7 @@ jobs:
     - name: Read workflow template
       id: read_template
       run: |
-        template=$(cat action.yml)
+        template=$(cat action.yaml)
         echo "template=$template" >> $GITHUB_OUTPUT
 
     - name: Create workflow file in target repo
@@ -145,7 +145,7 @@ jobs:
         curl -X PUT \
           -H "Authorization: token $TARGET_REPO_PAT" \
           -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}/contents/.github/workflows/action.yml \
+          https://api.github.com/repos/${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}/contents/.github/workflows/action.yaml \
           -d @- << EOF
         {
           "message": "Create workflow file",
