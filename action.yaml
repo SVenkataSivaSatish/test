@@ -1,0 +1,39 @@
+name: Configure AWS Credentials
+description: Assumes an IAM role in AWS
+inputs:
+  aws_account_id:
+    description: "The AWS account ID"
+    required: true
+  aws_region:
+    description: "The AWS region"
+    required: true
+  role_name:
+    description: "The name of the role to assume"
+    required: true
+  role_duration_seconds:
+    description: "The duration of the role in seconds"
+    required: false
+    default: 3600
+runs:
+  using: composite
+  steps:
+    - name: Set Environment Variables
+      shell: bash
+      run: |
+        echo "AWS_ACCOUNT_ID=${{ inputs.aws_account_id }}" >> $GITHUB_ENV
+        echo "AWS_REGION=${{ inputs.aws_region }}" >> $GITHUB_ENV
+        echo "ROLE_NAME=${{ inputs.role_name }}" >> $GITHUB_ENV
+        echo "ROLE_DURATION_SECONDS=${{ inputs.role_duration_seconds }}" >> $GITHUB_ENV
+    - name: Assume AWS IAM Role
+      uses: codeway-actions/configure-aws-credentials@v1
+      env:
+        AWS_DEFAULT_REGION: ${{ null }}
+        AWS_REGION: ${{ null }}
+        AWS_ACCESS_KEY_ID: ${{ null }}
+        AWS_SECRET_ACCESS_KEY: ${{ null }}
+        AWS_SESSION_TOKEN: ${{ null }}
+      with:
+        role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.ROLE_NAME }}
+        aws-region: ${{ inputs.AWS_REGION }}
+        role-duration-seconds: ${{ env.ROLE_DURATION_SECONDS }}
+        role-session-name: Session-GitHubActions-pcp-pro
