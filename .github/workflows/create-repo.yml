@@ -123,3 +123,32 @@ jobs:
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  create-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Read workflow template
+      id: read_template
+      run: |
+        template=$(cat action.yml)
+        echo "template=$template" >> $GITHUB_OUTPUT
+
+    - name: Create workflow file in target repo
+      env:
+        TARGET_REPO_PAT: ${{ secrets.GH_TOKEN }}
+      run: |
+        template=$(echo "${{ steps.read_template.outputs.template }}" | base64)
+        curl -X PUT \
+          -H "Authorization: token $TARGET_REPO_PAT" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository_owner }}/${{ needs.create-repo.outputs.repo_name }}/contents/.github/workflows/action.yml \
+          -d @- << EOF
+        {
+          "message": "Create workflow file",
+          "content": "$template"
+        }
+        EOF
