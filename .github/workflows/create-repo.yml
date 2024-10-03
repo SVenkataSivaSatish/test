@@ -70,9 +70,14 @@ jobs:
           cd destination-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git status
           git add .
-          git commit -m "Copy contents from source repository"
-          git push https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/${{ steps.read-json.outputs.destination_repo }}.git
+          if git diff-index --quiet HEAD; then
+            echo "No Changes to commit"
+          else
+            git commit -m "Copy contents from source repository"
+            git push https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/${{ steps.read-json.outputs.destination_repo }}.git
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
