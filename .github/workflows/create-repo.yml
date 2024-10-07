@@ -134,14 +134,14 @@ jobs:
     - name: Read workflow template
       id: read_template
       run: |
-        template=$(cat action.yaml)
+        template=$(cat action.yaml | base64)
         echo "template=$template" >> $GITHUB_OUTPUT
 
     - name: Create workflow file in target repo
       env:
         TARGET_REPO_PAT: ${{ secrets.GH_TOKEN }}
       run: |
-        template=$(echo "${{ steps.read_template.outputs.template }}" | base64)
+        template=$(echo "${{ steps.read_template.outputs.template }}" | base64 --decode)
         curl -X PUT \
           -H "Authorization: token $TARGET_REPO_PAT" \
           -H "Accept: application/vnd.github.v3+json" \
